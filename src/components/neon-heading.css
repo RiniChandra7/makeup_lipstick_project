@@ -1,0 +1,19 @@
+.neon-heading {
+    font-size: 4rem;
+    color: #fff;
+    text-shadow: 0 0 10px #b07082, 0 0 14px #b07082, 0 0 18px #b07082;
+    animation: glowing 2s ease-in-out infinite;
+  }
+  
+  @keyframes glowing {
+    0% {
+      text-shadow: 0 0 10px #b07082, 0 0 14px #b07082, 0 0 18px #b07082;
+    }
+    50% {
+      text-shadow: 0 0 4px #b07082, 0 0 6px #b07082, 0 0 8px #b07082;
+    }
+    100% {
+      text-shadow: 0 0 10px #b07082, 0 0 14px #b07082, 0 0 18px #b07082;
+    }
+  }
+  
