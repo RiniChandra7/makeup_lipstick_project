@@ -1,5 +1,5 @@
 import React from "react";
-import './neon-heading.css';
+import '../styles/neon-heading.css';
 
 const NeonHeading = ({heading}) => {
     return (
