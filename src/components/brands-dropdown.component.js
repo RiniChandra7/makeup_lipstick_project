@@ -1,19 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ProductContext } from "../contexts/product-data.context";
 
-const BrandsDropdown = React.memo(() => {
+const BrandsDropdown = () => {
+    const {productsList, brand, setBrand} = useContext(ProductContext);
     const [brandsList, setBrandsList] = useState([]);
 
-    useEffect(() => {
-        fetch('https://makeup-api.herokuapp.com/api/v1/products.json?product_type=lipstick')
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-            setBrandsList(data);
-        })
-    },
-    []);
-});
+  useEffect(() => {
+    if (productsList.current.length > 0) {
+      //console.log(productsList);
+      const uniqueBrands = Array.from(
+        new Set(productsList.current.map((p) => capitalize(p.productBrand)))
+      );
+      console.log(uniqueBrands);
+      setBrandsList(uniqueBrands);
+    }
+  }, [productsList.current]);
+
+    const capitalize = (str) => {
+        if (str.length > 0) {
+            return str.charAt(0).toUpperCase() + str.substring(1);
+        }
+        return "";
+    }
+
+    console.log(brandsList);
+
+    return (
+        <>
+        <p>Brands</p>
+        </>
+    );
+};
 
 export default BrandsDropdown;
