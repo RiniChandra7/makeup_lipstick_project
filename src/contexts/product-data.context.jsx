@@ -7,13 +7,16 @@ export const ProductContext = createContext({
     productName: "",
     setProductName: () => {},
     productId: -1,
-    setProductId: () => {}
+    setProductId: () => {},
+    collectionShades: [],
+    setCollectionShades: () => {}
 });
 
 export const ProductProvider = ({children}) => {
     const [brand, setBrand] = useState("");
     const [productName, setProductName] = useState("");
     const [productId, setProductId] = useState(-1);
+    const [collectionShades, setCollectionShades] = useState([]);
     const productsList = useRef([]);
 
     useEffect(() => {
@@ -52,7 +55,9 @@ export const ProductProvider = ({children}) => {
         productName,
         setProductName,
         productId,
-        setProductId
+        setProductId,
+        collectionShades,
+        setCollectionShades
     };
 
     return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

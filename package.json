@@ -11,6 +11,8 @@
     "postcss": "^8.4.24",
     "react": "^18.2.0",
     "react-bootstrap": "^2.8.0",
+    "react-color": "^2.19.3",
+    "react-color-palette": "^6.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",

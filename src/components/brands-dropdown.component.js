@@ -6,8 +6,9 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import '../styles/feature-card.css';
 
 const BrandsDropdown = () => {
-    const {productsList, brand, setBrand} = useContext(ProductContext);
+    const {productsList, brand, setBrand, collectionShades} = useContext(ProductContext);
     const [brandsList, setBrandsList] = useState([]);
+    const [curBrand, setCurBrand] = useState("");
 
   useEffect(() => {
     if (productsList.current.length > 0) {
@@ -29,14 +30,16 @@ const BrandsDropdown = () => {
 
     const brandSelectHandler = (e) => {
       console.log(e.target.value);
-      setBrand(e.target.value);
+      setCurBrand(e.target.value.toLowerCase());
+      setBrand(e.target.value.toLowerCase());
     };
 
     return (
         <div>
-          <Form.Group controlId="dropdown1">
+          <Form.Group controlId="brands-dropdown">
             <Form.Label className="dropdown-label">Select a brand from the dropdown below</Form.Label>
-            <Form.Control as="select" className="border" onChange={brandSelectHandler} value={brand}>
+            <Form.Control as="select" className="border" onChange={brandSelectHandler} value={capitalize(curBrand)}>
+              <option value="Select a brand">Select a brand</option>
               {brandsList.map((option, optionIndex) => (
                 <option key={optionIndex} value={option}>{option}</option>
               ))}

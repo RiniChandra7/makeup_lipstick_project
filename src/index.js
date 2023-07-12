@@ -4,7 +4,6 @@ import './index.css';
 import './tailwind.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter as Router } from 'react-router-dom';
 import { ProductProvider } from './contexts/product-data.context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

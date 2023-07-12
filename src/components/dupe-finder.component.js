@@ -1,17 +1,19 @@
 import '../App.css';
 import BrandsDropdown from './brands-dropdown.component';
-import { ProductContext } from "../contexts/product-data.context";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import FeatureCard from './feature-card.component';
+import CollectionsDropdown from './collections-dropdown.component';
+import ColorDropdown from './color-selector.component';
 
 function DupeFinder() {
-  const {productsList} = useContext(ProductContext);
   return (
-    <div className="App">
-      <FeatureCard>
-        <BrandsDropdown />
-      </FeatureCard>
-    </div>
+      <div className="App">
+        <FeatureCard>
+          <BrandsDropdown />
+          <CollectionsDropdown />
+          <ColorDropdown />
+        </FeatureCard>
+      </div>    
   );
 }
 
