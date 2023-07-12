@@ -16,6 +16,7 @@ const CollectionsDropdown = () => {
             const data = productsList.current.filter(prod => prod.productBrand === brand);
             console.log(data);
             let collections = data.map(({productId, productName, productShades}) => ({productId, productName, productShades}));
+            collections = collections.filter((col) => col.productShades.length > 0);
             console.log(collections);
             setCollectionsList(collections);
         }
