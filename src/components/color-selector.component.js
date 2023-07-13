@@ -39,10 +39,10 @@ const ColorDropdown = () => {
     <tr style={{border: '1px solid black'}}>
       <th colSpan={2}>Selected color: 
         {
-          brand.charAt(0).toUpperCase() + 
+          " " + brand.charAt(0).toUpperCase() + 
           brand.substring(1).toLowerCase() + 
-          " " + productName + " " + 
-          selectedColor.colour_name
+          " " + productName + " (" + 
+          selectedColor.colour_name + ")"
         }
       </th>
     </tr>
@@ -60,7 +60,7 @@ const ColorDropdown = () => {
         />
       </Form.Group>
 
-      <Table striped bordered hover>
+      <Table striped bordered hover style={{marginTop: '20px'}}>
         <tbody>
             {selectedColor.hex_value && selectedColorData}
             {colorElement}
