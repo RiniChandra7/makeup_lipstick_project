@@ -11,7 +11,8 @@ export const ProductContext = createContext({
     collectionShades: [],
     setCollectionShades: () => {},
     allShadesList: [],
-    brandsList: []
+    brandsList: [],
+    dupeFinder: true
 });
 
 export const ProductProvider = ({children}) => {
@@ -22,6 +23,7 @@ export const ProductProvider = ({children}) => {
     const productsList = useRef([]);
     const allShadesList = useRef([]);
     const brandsList = useRef([]);
+    const dupeFinder = useRef(true);
 
     useEffect(() => {
         const getDataHelper = async () => {
@@ -54,7 +56,6 @@ export const ProductProvider = ({children}) => {
                                     return shadeObj;
                                 });
                                 allShadesList.current = [...allShadesList.current, ...currentShades];
-                                //console.log(allShadesList.current);
                             }
 
                             if (prod.productBrand.length > 0) {
@@ -62,15 +63,37 @@ export const ProductProvider = ({children}) => {
                                 brandsList.current = Array.from(
                                     new Set(brandsList.current.map((p) => p.charAt(0).toUpperCase() + p.substring(1)))
                                 );
-                                //console.log(brandsList.current);
                             }
                         }
                         return prod;
                     });
                 })
+                .then(() => {
+                    sessionStorage.setItem("productsList", JSON.stringify(productsList.current));
+                    sessionStorage.setItem("allShadesList", JSON.stringify(allShadesList.current));
+                    sessionStorage.setItem("brandsList", JSON.stringify(brandsList.current));
+
+                    if (productsList.current.length > 0) {
+                        dupeFinder.current = false;
+                    }
+                })
             }
         }
-        getDataHelper();
+        
+        const storedProductsList = sessionStorage.getItem("productsList");
+        const storedAllShadesList = sessionStorage.getItem("allShadesList");
+        const storedBrandsList = sessionStorage.getItem("brandsList");
+
+        if (storedProductsList && storedAllShadesList && storedBrandsList) {
+            // If data is available, parse and update the respective variables
+            productsList.current = JSON.parse(storedProductsList);
+            allShadesList.current = JSON.parse(storedAllShadesList);
+            brandsList.current = JSON.parse(storedBrandsList);
+            dupeFinder.current = false; // Assuming data is already available
+        } else {
+            // If data is not available in sessionStorage, fetch and store the data
+            getDataHelper();
+        }
     }, []);
 
     const value = {
@@ -84,7 +107,8 @@ export const ProductProvider = ({children}) => {
         collectionShades,
         setCollectionShades,
         allShadesList,
-        brandsList
+        brandsList,
+        dupeFinder
     };
 
     return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
