@@ -9,6 +9,7 @@ const ColorDropdown = () => {
   const [matchedColors, setMatchedColors] = useState(collectionShades);
 
   const handleColorChange = (color) => {
+    console.log(color);
     setSelectedColor(color);
   };
 
@@ -23,6 +24,11 @@ const ColorDropdown = () => {
   useEffect(() => {
     setCollectionShades([]);
   }, [brand]);
+
+  //effect in place to reset the selected color when the user changes collections
+  useEffect(() => {
+    setSelectedColor({});
+  }, [collectionShades]);
 
   const colorElement = matchedColors.map((color, index) => (
     <tr key={index} onClick={() => handleColorChange(color)}>
