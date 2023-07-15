@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Table, Form } from 'react-bootstrap';
+import { Table, Form, Button } from 'react-bootstrap';
 import { ProductContext } from '../contexts/product-data.context';
+import { Link } from 'react-router-dom';
 
 const ColorDropdown = () => {
-  const [selectedColor, setSelectedColor] = useState({});
   const [searchText, setSearchText] = useState("");
-  const {collectionShades, setCollectionShades, brand, productName} = useContext(ProductContext);
+  const {collectionShades, setCollectionShades, brand, selectedMatchColor, setSelectedMatchColor} = useContext(ProductContext);
   const [matchedColors, setMatchedColors] = useState(collectionShades);
+  const [selectedColor, setSelectedColor] = useState({});
 
   const handleColorChange = (color) => {
     console.log(color);
     setSelectedColor(color);
+    setSelectedMatchColor(color);
   };
 
   const handleSearchChange = (e) => {
@@ -26,9 +28,9 @@ const ColorDropdown = () => {
   }, [brand]);
 
   //effect in place to reset the selected color when the user changes collections
-  useEffect(() => {
+  /*useEffect(() => {
     setSelectedColor({});
-  }, [collectionShades]);
+  }, [collectionShades]);*/
 
   const colorElement = matchedColors.map((color, index) => (
     <tr key={index} onClick={() => handleColorChange(color)}>
@@ -38,6 +40,7 @@ const ColorDropdown = () => {
   ));
 
   const selectedColorData = 
+  selectedColor.brand && selectedColor.collection && selectedColor.colour_name && selectedColor.hex_value &&
   <>
     <tr style={{border: '1px solid black'}}>
       <th style={{backgroundColor: selectedColor.hex_value}} colSpan={2}></th>
@@ -45,12 +48,19 @@ const ColorDropdown = () => {
     <tr style={{border: '1px solid black'}}>
       <th colSpan={2}>Selected color: 
         {
-          " " + brand.charAt(0).toUpperCase() + 
-          brand.substring(1).toLowerCase() + 
-          " " + productName + " (" + 
+          " " + selectedColor.brand.charAt(0).toUpperCase() + 
+          selectedColor.brand.substring(1).toLowerCase() + 
+          " " + selectedColor.collection + " (" + 
           selectedColor.colour_name + ")"
         }
       </th>
+    </tr>
+    <tr style={{border: '1px solid black'}}>
+      <td colSpan={2}>
+        <Link to='/shade-matches' disabled={selectedColor.hex_value}>
+          <Button variant='primary'>Get Matches</Button>
+        </Link>
+      </td>
     </tr>
   </>;
 

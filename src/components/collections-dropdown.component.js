@@ -27,7 +27,17 @@ const CollectionsDropdown = () => {
       if (e.target.value != "Select a collection") {
         let shades = collectionsList.filter(c => c.productName == e.target.value).map(({productShades}) => ({productShades}));
         console.log(shades[0].productShades);
-        setCollectionShades(shades[0].productShades);
+        let finShades = shades[0].productShades.map((shade) => {
+            let obj = {};
+            obj.colour_name = shade.colour_name;
+            obj.hex_value = shade.hex_value;
+            obj.brand = brand;
+            obj.collection = e.target.value;
+
+            return obj;
+        });
+        console.log(finShades);
+        setCollectionShades(finShades);
         setCurProductName(e.target.value);
         setProductName(e.target.value);
       }

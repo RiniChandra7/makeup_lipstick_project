@@ -12,7 +12,10 @@ export const ProductContext = createContext({
     setCollectionShades: () => {},
     allShadesList: [],
     brandsList: [],
-    dupeFinder: true
+    dupeFinder: true,
+    hexToRgb: () => {},
+    selectedMatchColor: {},
+    setSelectedMatchColor: () => {}
 });
 
 export const ProductProvider = ({children}) => {
@@ -20,10 +23,26 @@ export const ProductProvider = ({children}) => {
     const [productName, setProductName] = useState("");
     const [productId, setProductId] = useState(-1);
     const [collectionShades, setCollectionShades] = useState([]);
+    const [selectedMatchColor, setSelectedMatchColor] = useState({});
+
     const productsList = useRef([]);
     const allShadesList = useRef([]);
     const brandsList = useRef([]);
     const dupeFinder = useRef(true);
+
+    const hexToRgb = (hexCode) => {
+        const hexValue = hexCode.toString().replace("#", "");
+        const r = parseInt(hexValue.substr(0, 2), 16);
+        const g = parseInt(hexValue.substr(2, 2), 16);
+        const b = parseInt(hexValue.substr(4, 2), 16);
+
+        const rgb = {};
+        rgb.r = r;
+        rgb.g = g;
+        rgb.b = b;
+
+        return rgb;
+    }
 
     useEffect(() => {
         const getDataHelper = async () => {
@@ -53,6 +72,7 @@ export const ProductProvider = ({children}) => {
                                     shadeObj.productName = prod.productName;
                                     shadeObj.shadeName = shade.colour_name;
                                     shadeObj.shadeHexCode = shade.hex_value;
+                                    shadeObj.rgb = hexToRgb(shade.hex_value);
                                     return shadeObj;
                                 });
                                 allShadesList.current = [...allShadesList.current, ...currentShades];
@@ -90,6 +110,7 @@ export const ProductProvider = ({children}) => {
             allShadesList.current = JSON.parse(storedAllShadesList);
             brandsList.current = JSON.parse(storedBrandsList);
             dupeFinder.current = false; // Assuming data is already available
+            console.log(allShadesList.current);
         } else {
             // If data is not available in sessionStorage, fetch and store the data
             getDataHelper();
@@ -108,7 +129,10 @@ export const ProductProvider = ({children}) => {
         setCollectionShades,
         allShadesList,
         brandsList,
-        dupeFinder
+        dupeFinder,
+        hexToRgb,
+        selectedMatchColor,
+        setSelectedMatchColor
     };
 
     return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

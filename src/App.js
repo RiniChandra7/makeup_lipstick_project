@@ -3,6 +3,7 @@ import DupeFinder from './components/dupe-finder.component';
 import Home from './components/home.component';
 import Navbar from './components/navbar.component';
 import Recommendations from './components/recommendations.component';
+import ShadeMatches from './components/shade-matches.component';
 import SuggestDupes from './components/suggest-dupes.component';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -17,6 +18,7 @@ function App() {
               <Route path="recommendations" element={<Recommendations />} />
               <Route path="suggest-dupes" element={<SuggestDupes />} />
               <Route path="*" element={<Home />} />
+              <Route path="shade-matches" element={<ShadeMatches />} />
             </Route>
           </Routes>
         </BrowserRouter>
