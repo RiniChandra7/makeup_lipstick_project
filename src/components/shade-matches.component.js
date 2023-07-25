@@ -8,7 +8,6 @@ import { Table } from 'react-bootstrap';
 
 function ShadeMatches() {
     const {allShadesList, selectedMatchColor, hexToRgb} = useContext(ProductContext);
-    const [isLoading, setIsLoading] = useState(true);
     const [matchResults, setMatchResults] = useState([]);
 
     //only taking colors with <=5% deviation in r, g and b
