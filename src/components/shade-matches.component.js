@@ -3,12 +3,14 @@ import '../App.css';
 import { ProductContext } from '../contexts/product-data.context';
 import FeatureCard from './feature-card.component';
 import '../styles/feature-card.css';
-import { Table } from 'react-bootstrap';
+import { Table, Pagination } from 'react-bootstrap';
 
 
 function ShadeMatches() {
     const {allShadesList, selectedMatchColor, hexToRgb} = useContext(ProductContext);
     const [matchResults, setMatchResults] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const resultsPerPage = 5;
 
     //only taking colors with <=5% deviation in r, g and b
     const compareRgbValues = (clr) => {
@@ -44,11 +46,23 @@ function ShadeMatches() {
         }
     }, [selectedMatchColor]);
 
+    // Calculate the index range to display for the current page
+    const indexOfLastResult = currentPage * resultsPerPage;
+    const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+    const currentResults = matchResults.slice(indexOfFirstResult, indexOfLastResult);
+
+    const handleNextPage = () => {
+        setCurrentPage((prevPage) => prevPage + 1);
+    };
+
+    const handlePreviousPage = () => {
+        setCurrentPage((prevPage) => prevPage - 1);
+    };
+
     return (
         <div className="App">
             <FeatureCard>
-
-                <Table striped bordered hover style={{marginTop: '20px'}}>
+                <Table striped bordered hover>
                     <tbody>
                         {
                             selectedMatchColor.brand && selectedMatchColor.collection && selectedMatchColor.colour_name && selectedMatchColor.hex_value &&
@@ -80,9 +94,10 @@ function ShadeMatches() {
                         }
                         
                     {
-                        matchResults.length ?
+                        
+                        currentResults.length ?
                             (
-                                matchResults.map((color, index) => (
+                                currentResults.map((color, index) => (
                                     <tr key={index}>
                                         <td style={{ backgroundColor: color.shadeHexCode, width: '20%' }}></td>
                                         <td className="color-name">
@@ -94,7 +109,8 @@ function ShadeMatches() {
                                             <br />
                                         </td>
                                     </tr>
-                            )))
+                                ))
+                            )
                             : (
                                 <tr>
                                     <td>
@@ -102,6 +118,22 @@ function ShadeMatches() {
                                     </td>
                                 </tr>
                             )
+                    }
+                    {
+                        matchResults.length > resultsPerPage && (
+                            <tr>
+                                <td colSpan={2} style={{ textAlign: 'center' }}>
+                                    <Pagination style={{margin: 'auto'}}>
+                                        <Pagination.Prev onClick={handlePreviousPage} disabled={currentPage === 1}>
+                                            Previous
+                                        </Pagination.Prev>
+                                        <Pagination.Next onClick={handleNextPage} disabled={indexOfLastResult >= matchResults.length}>
+                                            Next
+                                        </Pagination.Next>
+                                    </Pagination>
+                                </td>
+                            </tr>
+                        )
                     }
                     </tbody>
                 </Table>
