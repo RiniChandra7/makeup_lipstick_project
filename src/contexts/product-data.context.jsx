@@ -15,7 +15,9 @@ export const ProductContext = createContext({
     dupeFinder: true,
     hexToRgb: () => {},
     selectedMatchColor: {},
-    setSelectedMatchColor: () => {}
+    setSelectedMatchColor: () => {},
+    selectedSkinTone: {},
+    setSelectedSkinTone: () => {}
 });
 
 export const ProductProvider = ({children}) => {
@@ -24,6 +26,7 @@ export const ProductProvider = ({children}) => {
     const [productId, setProductId] = useState(-1);
     const [collectionShades, setCollectionShades] = useState([]);
     const [selectedMatchColor, setSelectedMatchColor] = useState({});
+    const [selectedSkinTone, setSelectedSkinTone] = useState({});
 
     const productsList = useRef([]);
     const allShadesList = useRef([]);
@@ -132,7 +135,9 @@ export const ProductProvider = ({children}) => {
         dupeFinder,
         hexToRgb,
         selectedMatchColor,
-        setSelectedMatchColor
+        setSelectedMatchColor,
+        setSelectedSkinTone,
+        selectedSkinTone
     };
 
     return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>

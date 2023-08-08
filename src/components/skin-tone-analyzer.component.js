@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import React, { useContext, useEffect, useState } from 'react';
+import { Row, Col, Button, Table } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { ProductContext } from '../contexts/product-data.context';
 
 const SkinToneAnalyzer = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [topSkinColors, setTopSkinColors] = useState([]);
-  const [selectedColor, setSelectedColor] = useState(null);
+  //const [selectedColor, setSelectedColor] = useState(null);
+  const {selectedSkinTone: selectedColor, setSelectedSkinTone: setSelectedColor} = useContext(ProductContext);
+  const [submitEnablement, setSubmitEnablement] = useState(true);
 
   // Function to check if a color is within the skin-like color range
   const isSkinToneColor = (r, g, b) => {
@@ -18,29 +22,6 @@ const SkinToneAnalyzer = () => {
 
     return r >= minRed && r <= maxRed && g >= minGreen && g <= maxGreen && b >= minBlue && b <= maxBlue;
   };
-
-  /*useEffect(() => {
-
-  }, [selectedImage]);
-
-  const setAllColorsHandler = (skinColorOccurrences) => {
-    // Sort skin-like colors by occurrence in descending order
-    const sortedColors = Object.entries(skinColorOccurrences)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5); // Get the top 5 skin-like colors
-
-    console.log(sortedColors);
-    const [selectedColorRed, selectedColorGreen, selectedColorBlue] = sortedColors[0][0].split('-').map(Number);
-    const selColor = {
-        r: selectedColorRed,
-        b: selectedColorBlue,
-        g: selectedColorGreen
-    };
-
-    setTopSkinColors(sortedColors);
-    setSelectedColor(selColor); // Set the initially selected color to the first color in the top 5 list
-  }
-  */
 
   // Function to handle the image upload and analysis
   const handleImageUpload = (event) => {
@@ -103,50 +84,81 @@ const SkinToneAnalyzer = () => {
     };
 
     setSelectedColor(selColor);
+    setSubmitEnablement(false);
   }
 
   return (
-    <div style={{textAlign: "left"}}>
-      <b>Upload a zoomed in image of your skin</b>
-      <p>
-        <b>Tip:</b>The detected colors are sensitive to lighting conditions and picture clarity. Please try again with an image of your facial skin,
-        zoomed in, preferably in neutral white lighting.
-      </p>
-      <input type="file" accept="image/*" onChange={handleImageUpload} />
-      {selectedImage && <img src={selectedImage} alt="Selected" style={{ width: '100%', marginTop: '10px', height: '50px' }} />}
-      <br />
+    <div className='App'>
+      <Table striped bordered>
+        <tbody>
+          <tr>
+            <td colSpan={5}>
+              <b>Upload a zoomed in image of your skin</b>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={5}>
+              <b>Tip:</b>The detected colors are sensitive to lighting conditions and picture clarity. Please upload an image of your facial skin,
+              zoomed in, preferably in neutral white lighting.
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={5}>
+              <input type="file" accept="image/*" onChange={handleImageUpload} />
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={5}>
+              {selectedImage && <img src={selectedImage} alt="Selected" style={{ width: '100%', height: '50px' }} />}
+            </td>
+          </tr>
       {topSkinColors.length > 0 && (
-        <div>
-          <p>Choose a color that is closest to your skin tone:</p>
-          <Row>
+        <>
+          <tr>
+            <td colSpan={5}>
+              Choose a color that is closest to your skin tone:
+            </td>    
+          </tr>
+          <tr>
             {topSkinColors.map(([colorKey, occurrences], index) => {
                 const [r, g, b] = colorKey.split('-').map(Number);
                 const colorStyle = {
                 height: '50px',
                 backgroundColor: `rgb(${r}, ${g}, ${b})`,
-                border: r === selectedColor.r && g === selectedColor.g && b === selectedColor.b ? '2px solid red' : 'none', // Highlight the selected color
+                border: r === selectedColor.r && g === selectedColor.g && b === selectedColor.b ? '2px solid red' : '1px solid black', // Highlight the selected color
                 };
                 return (
-                    <Col key={index}>
-                        <div key={index} style={colorStyle} onClick={() => handleColorSelect(colorKey)}></div>
-                    </Col>
+                  <td key={index} style={colorStyle} onClick={() => handleColorSelect(colorKey)}></td>
                 );
             })}
-          </Row>
-        </div>
+          </tr>
+        </>
       )}
-      {selectedColor && (
-        <div>
-          <b>Selected Color:</b>
-          <div
-            style={{
+      {!submitEnablement && selectedColor && (
+        <>
+          <tr>
+            <td colSpan={5}>
+              Selected Color:
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={5} style={{
               height: '50px',
               backgroundColor: `rgb(${selectedColor.r}, ${selectedColor.g}, ${selectedColor.b})`,
               border: '2px solid black',
-            }}
-          ></div>
-        </div>
+            }}></td>
+          </tr>
+          <tr>
+            <td colSpan={5}>
+              <Link to='/lipstick-recommendations'>
+                <Button variant='primary'>Get Recommendations</Button>
+              </Link>
+            </td>
+          </tr>
+        </>
       )}
+      </tbody>
+      </Table>
     </div>
   );
 };
