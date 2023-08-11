@@ -17,7 +17,8 @@ export const ProductContext = createContext({
     selectedMatchColor: {},
     setSelectedMatchColor: () => {},
     selectedSkinTone: {},
-    setSelectedSkinTone: () => {}
+    setSelectedSkinTone: () => {},
+    colorFamilies: []
 });
 
 export const ProductProvider = ({children}) => {
@@ -32,6 +33,102 @@ export const ProductProvider = ({children}) => {
     const allShadesList = useRef([]);
     const brandsList = useRef([]);
     const dupeFinder = useRef(true);
+    const colorFamilies = useRef(["Reds", "Pinks", "Browns", "Purples"]);
+    const colorFamilyCodes = {
+        "Reds": [
+            {
+                //Light red
+                r: 255, g: 114, b: 118
+            },
+            {
+                //Cherry red
+                r: 205, g: 0, b: 26
+            },
+            {
+                //Rustic red
+                r: 84, g: 11, b: 12
+            }
+        ],
+        "Pinks": [
+            {
+                //Light pink
+                r: 245, g: 218, b: 223
+            },
+            {
+                //Cotton candy pink
+                r: 255, g: 188, b: 217
+            },
+            {
+                //Highlighter pink
+                r: 255, g: 20, b: 147
+            },
+            {
+                //Deep pink
+                r: 214, g: 37, b: 152
+            }
+        ],
+        "Browns": [
+            {
+                //Light brown
+                r: 189, g: 154, b: 122
+            },
+            {
+                //Maple
+                r: 196, g: 99, b: 22
+            },
+            {
+                //Chocolate brown
+                r: 98, g: 52, b: 18
+            },
+            {
+                //Rich brown
+                r: 50, g: 26, b: 24
+            }
+        ],
+        "Purples": [
+            {
+                //Light purple
+                r: 197, g: 180, b: 227
+            },
+            {
+                //Light zerg purple
+                r: 166, g: 81, b: 126
+            },
+            {
+                //Neon purple
+                r: 199, g: 36, b: 177
+            },
+            {
+                //Violet
+                r: 155, g: 38, b: 182
+            }
+        ]
+    };
+
+    function calculateColorDistance(color1, color2) {
+        const rDiff = color1.r - color2.r;
+        const gDiff = color1.g - color2.g;
+        const bDiff = color1.b - color2.b;
+      
+        return Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
+    }
+      
+    function findClosestColorFamily(targetColor) {
+        let closestFamily = null;
+        let minDistance = Number.MAX_VALUE;
+      
+        for (const family in colorFamilyCodes) {
+          for (const color of colorFamilyCodes[family]) {
+            const distance = calculateColorDistance(targetColor, color);
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestFamily = family;
+            }
+          }
+        }
+      
+        return closestFamily;
+    }
 
     const hexToRgb = (hexCode) => {
         const hexValue = hexCode.toString().replace("#", "");
@@ -76,6 +173,7 @@ export const ProductProvider = ({children}) => {
                                     shadeObj.shadeName = shade.colour_name;
                                     shadeObj.shadeHexCode = shade.hex_value;
                                     shadeObj.rgb = hexToRgb(shade.hex_value);
+                                    shadeObj.colorFamily = findClosestColorFamily(shadeObj.rgb);
                                     return shadeObj;
                                 });
                                 allShadesList.current = [...allShadesList.current, ...currentShades];
@@ -137,7 +235,8 @@ export const ProductProvider = ({children}) => {
         selectedMatchColor,
         setSelectedMatchColor,
         setSelectedSkinTone,
-        selectedSkinTone
+        selectedSkinTone,
+        colorFamilies
     };
 
     return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>
