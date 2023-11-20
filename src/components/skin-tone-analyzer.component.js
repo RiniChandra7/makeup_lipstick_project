@@ -61,7 +61,7 @@ const SkinToneAnalyzer = () => {
         // Sort skin-like colors by occurrence in descending order
         const sortedColors = Object.entries(skinColorOccurrences)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 5); // Get the top 5 skin-like colors
+          .slice(0, 10); // Get the top 5 skin-like colors
 
         setTopSkinColors(sortedColors);
         setSelectedColor(sortedColors[0][0]); // Set the initially selected color to the first color in the top 5 list
@@ -89,7 +89,7 @@ const SkinToneAnalyzer = () => {
 
   return (
     <div className='App'>
-      <Table striped bordered>
+      <Table bordered>
         <tbody>
           <tr>
             <td colSpan={5}>
@@ -120,7 +120,20 @@ const SkinToneAnalyzer = () => {
             </td>    
           </tr>
           <tr>
-            {topSkinColors.map(([colorKey, occurrences], index) => {
+            {topSkinColors.slice(0, 5).map(([colorKey, occurrences], index) => {
+                const [r, g, b] = colorKey.split('-').map(Number);
+                const colorStyle = {
+                height: '50px',
+                backgroundColor: `rgb(${r}, ${g}, ${b})`,
+                border: r === selectedColor.r && g === selectedColor.g && b === selectedColor.b ? '2px solid red' : '1px solid black', // Highlight the selected color
+                };
+                return (
+                  <td key={index} style={colorStyle} onClick={() => handleColorSelect(colorKey)}></td>
+                );
+            })}
+          </tr>
+          <tr>
+            {topSkinColors.slice(5).map(([colorKey, occurrences], index) => {
                 const [r, g, b] = colorKey.split('-').map(Number);
                 const colorStyle = {
                 height: '50px',
