@@ -10,6 +10,10 @@ const swatchSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  collection: {
+    type: String,
+    required: true,
+  },
   shade: {
     type: String,
     required: true,

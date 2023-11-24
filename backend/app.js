@@ -4,12 +4,19 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
+const cors = require('cors'); 
 const swatchesRoutes = require('./routes/swatchesRoutes');
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:3001'); // Update with your frontend URL
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

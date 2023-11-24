@@ -11,7 +11,7 @@ class SwatchesRepository {
   }
 
   async createSwatches(swatchData) {
-    const swatch = new Swatches(studentData);
+    const swatch = new Swatches(swatchData);
     return swatch.save();
   }
 

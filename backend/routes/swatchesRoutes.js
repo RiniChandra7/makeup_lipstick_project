@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const upload = multer({ storage: storage });
 
 router.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const student = await swatchesRepository.getSwatchesById(id);
+    const swatches = await swatchesRepository.getSwatchesById(id);
     if (!swatches) {
       res.status(404).json({ error: 'Swatches not found' });
     } else {
@@ -48,11 +48,14 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', upload.single('swatchPicture'), async (req, res) => {
+router.post('/', upload.single('pic'), async (req, res) => {
   const swatchData = req.body;
+  //console.log(swatchData);
+  console.log(req.file);
   if (req.file) {
-    swatchData.profilePicture = req.file.filename;
+    swatchData.pic = req.file.filename;
   }
+  console.log(swatchData);
   try {
     const createdSwatch = await swatchesRepository.createSwatches(swatchData);
     res.status(201).json(createdSwatch);
