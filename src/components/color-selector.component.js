@@ -32,7 +32,9 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
     formData.append("pic", image);
 
     try {
-      const response = await axios.post('http://localhost:3000/swatches', formData, {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+
+      const response = await axios.post(`${apiUrl}/swatches`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
