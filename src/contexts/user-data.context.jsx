@@ -1,20 +1,31 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 
 export const UserContext = createContext({
-    userData: null,
-    setUserData: () => {}
+    setUserData: () => {},
+    userData: null
 });
 
 export const UserProvider = ({children}) => {
-    const [userData, setUserData] = useState(null);//try useRef or sessionStorage as the userdata is getting lost on refresh
+    const userData = useRef(null);
+
+    const setUserData = (newUserData) => {
+        userData.current = newUserData;
+        sessionStorage.setItem("userData", JSON.stringify(userData.current));
+    }
 
     useEffect(() => {
-        console.log(userData);
-    }, [userData]);
+        console.log("session storage udata ");
+        const u = sessionStorage.getItem("userData");
+
+        if (u) {
+            userData.current = JSON.parse(sessionStorage.getItem("userData"));
+        }
+        console.log(userData.current);
+    }, [userData.current]);
 
     const value = {
-        userData,
-        setUserData
+        setUserData,
+        userData
     };
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>

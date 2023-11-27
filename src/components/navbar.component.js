@@ -14,7 +14,7 @@ const Navbar = () => {
   const [dupeFinderEnabled, setDupeFinderEnabled] = useState(dupeFinder.current);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const {userData, setUserData} = useContext(UserContext);
-  const user = userData;
+  const user = userData.current;
   //const history = useHistory();
 
   const handleToggle = () => {
@@ -36,7 +36,7 @@ const Navbar = () => {
 
   const handleSuggestDupesClick = () => {
     // Check if the user is logged in
-    const userLoggedIn = userData;
+    const userLoggedIn = userData.current;
     console.log(userLoggedIn);
 
     if (!userLoggedIn) {
@@ -98,7 +98,7 @@ const Navbar = () => {
   return (
     <>
     {console.log("rendered navbar")}
-    {console.log(userData)}
+    {console.log(userData.current)}
       <Nb style={{ backgroundColor: '#b07082' }} variant="dark" expand="lg" expanded={expanded} onToggle={handleToggle}>
         <Nb.Brand as={Link} to="/" className="ml-4">Lipcolor Engine</Nb.Brand>
         <Nb.Toggle aria-controls="navbar-nav" />
