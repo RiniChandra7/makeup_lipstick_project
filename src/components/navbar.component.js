@@ -13,8 +13,8 @@ const Navbar = () => {
   const { dupeFinder } = useContext(ProductContext);
   const [dupeFinderEnabled, setDupeFinderEnabled] = useState(dupeFinder.current);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const {userData, setUserData} = useContext(UserContext);
-  const user = userData.current;
+  const [userName, setUserName] = useState(null);
+  const {userData, setUserData, profile} = useContext(UserContext);
   //const history = useHistory();
 
   const handleToggle = () => {
@@ -87,13 +87,15 @@ const Navbar = () => {
   const logOut = () => {
     googleLogout();
     setUserData(null);
+    profile.current = null;
     window.location.href = window.location.origin;
   };
 
-  /*useEffect(() => {
-    setDupeFinderEnabled(false);
-  }
-  , [productsList.current]);*/
+  useEffect(() => {
+    console.log(profile.current);
+    if (profile.current)
+      setUserName(profile.current.given_name);
+  }, [profile]);
 
   return (
     <>
@@ -108,9 +110,11 @@ const Navbar = () => {
               <Nav.Link as={Link} to="/dupe-finder" className="mr-3" onClick={handleLinkClick} disabled={dupeFinderEnabled.current}>Dupe Finder</Nav.Link>
               <Nav.Link as={Link} to="/recommendations" className="mr-3" onClick={handleLinkClick}>Recommendations by Skin Tone</Nav.Link>
               <Nav.Link as={Link} to="/suggest-dupes" className="mr-3" onClick={handleSuggestDupesClick}>Suggest Dupes</Nav.Link>
-              <Nav.Link as={Link} className="mr-3" onClick={logOut}>LogOut</Nav.Link>
+              {userData.current && <Nav.Link as={Link} className="mr-3" onClick={logOut}>LogOut</Nav.Link>}
+              {profile.current && <Nb.Text>Hi {profile.current.given_name}</Nb.Text>}
           </Nav>
         </Nb.Collapse>
+        
       </Nb>
       <Outlet />
 

@@ -3,6 +3,7 @@ import { Table, Form, Button } from 'react-bootstrap';
 import { ProductContext } from '../contexts/product-data.context';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { UserContext } from '../contexts/user-data.context';
 
 const ColorDropdown = ({sourceIsSwatchSubmit}) => {
   const [searchText, setSearchText] = useState("");
@@ -10,6 +11,7 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
   const [matchedColors, setMatchedColors] = useState(collectionShades);
   const [selectedColor, setSelectedColor] = useState({});
   const [image, setImage] = useState(null);
+  const {userData} = useContext(UserContext);
 
   const handleColorChange = (color) => {
     console.log(color);
@@ -25,7 +27,7 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
     e.preventDefault();
 
     let formData = new FormData();
-    formData.append("uid", "sampleUid1");
+    formData.append("uid", userData.current.access_token);
     formData.append("brand", selectedColor.brand);
     formData.append("collection", selectedColor.collection);
     formData.append("shade", selectedColor.colour_name);

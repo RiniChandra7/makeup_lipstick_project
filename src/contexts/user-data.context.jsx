@@ -1,16 +1,65 @@
 import { createContext, useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 export const UserContext = createContext({
     setUserData: () => {},
-    userData: null
+    userData: null,
+    profile: null
 });
 
 export const UserProvider = ({children}) => {
     const userData = useRef(null);
+    const profile = useRef(null);
 
     const setUserData = (newUserData) => {
         userData.current = newUserData;
         sessionStorage.setItem("userData", JSON.stringify(userData.current));
+        if (userData.current) {
+            //updateProfile();
+            if (userData.current) {
+                axios
+                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userData.current.access_token}`, {
+                    headers: {
+                        Authorization: `Bearer ${userData.current.access_token}`,
+                        Accept: 'application/json'
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data);
+                    profile.current = res.data;
+                    sessionStorage.setItem("profileData", JSON.stringify(profile.current));
+                })
+                .catch((err) => console.log(err));
+    
+                console.log(profile);
+            }
+        }
+        else {
+            sessionStorage.setItem("profileData", null);
+            profile.current = null;
+        }
+    }
+
+    const updateProfile = () => {
+        userData.current = JSON.parse(sessionStorage.getItem("userData"));
+        profile.current = JSON.parse(sessionStorage.getItem("profileData"));
+
+        /*if (userData.current) {
+            axios
+            .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userData.current.access_token}`, {
+                headers: {
+                    Authorization: `Bearer ${userData.current.access_token}`,
+                    Accept: 'application/json'
+                }
+            })
+            .then((res) => {
+                console.log(res.data);
+                profile.current = res.data;
+            })
+            .catch((err) => console.log(err));
+
+            console.log(profile);
+        }*/
     }
 
     useEffect(() => {
@@ -18,14 +67,15 @@ export const UserProvider = ({children}) => {
         const u = sessionStorage.getItem("userData");
 
         if (u) {
-            userData.current = JSON.parse(sessionStorage.getItem("userData"));
+            updateProfile();
         }
-        console.log(userData.current);
-    }, [userData.current]);
+        //console.log(userData.current);
+    }, []);
 
     const value = {
         setUserData,
-        userData
+        userData,
+        profile
     };
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
