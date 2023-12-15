@@ -64,38 +64,35 @@ const Navbar = () => {
     onError: (error) => console.log('Login Failed:', error)
   });
 
-  /*useEffect(
-    () => {
-      console.log(userData);
-        if (user) {
-            axios
-                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
-                    headers: {
-                        Authorization: `Bearer ${user.access_token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .then((res) => {
-                    setUserData(res.data);
-                })
-                .catch((err) => console.log(err));
-        }
-    },
-    [ user ]
-);*/
-
   const logOut = () => {
     googleLogout();
     setUserData(null);
+    setUserName(null);
     profile.current = null;
     window.location.href = window.location.origin;
   };
 
   useEffect(() => {
-    console.log(profile.current);
-    if (profile.current)
-      setUserName(profile.current.given_name);
-  }, [profile]);
+    if (userData.current) {
+      axios
+      .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userData.current.access_token}`, {
+          headers: {
+              Authorization: `Bearer ${userData.current.access_token}`,
+              Accept: 'application/json'
+          }
+      })
+      .then((res) => {
+          console.log(res.data);
+          profile.current = res.data;
+          sessionStorage.setItem("profileData", JSON.stringify(profile.current));
+          setUserName(profile.current.given_name);
+      })
+      .catch((err) => console.log(err));
+
+      console.log(profile);
+    }
+  }
+  , [userData.current]);
 
   return (
     <>
@@ -111,7 +108,7 @@ const Navbar = () => {
               <Nav.Link as={Link} to="/recommendations" className="mr-3" onClick={handleLinkClick}>Recommendations by Skin Tone</Nav.Link>
               <Nav.Link as={Link} to="/suggest-dupes" className="mr-3" onClick={handleSuggestDupesClick}>Suggest Dupes</Nav.Link>
               {userData.current && <Nav.Link as={Link} className="mr-3" onClick={logOut}>LogOut</Nav.Link>}
-              {profile.current && <Nb.Text>Hi {profile.current.given_name}</Nb.Text>}
+              {userName && <Nav.Link>Hi {userName}</Nav.Link>}
           </Nav>
         </Nb.Collapse>
         

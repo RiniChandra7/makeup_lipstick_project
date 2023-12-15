@@ -14,27 +14,7 @@ export const UserProvider = ({children}) => {
     const setUserData = (newUserData) => {
         userData.current = newUserData;
         sessionStorage.setItem("userData", JSON.stringify(userData.current));
-        if (userData.current) {
-            //updateProfile();
-            if (userData.current) {
-                axios
-                .get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${userData.current.access_token}`, {
-                    headers: {
-                        Authorization: `Bearer ${userData.current.access_token}`,
-                        Accept: 'application/json'
-                    }
-                })
-                .then((res) => {
-                    console.log(res.data);
-                    profile.current = res.data;
-                    sessionStorage.setItem("profileData", JSON.stringify(profile.current));
-                })
-                .catch((err) => console.log(err));
-    
-                console.log(profile);
-            }
-        }
-        else {
+        if (!userData.current) {
             sessionStorage.setItem("profileData", null);
             profile.current = null;
         }
