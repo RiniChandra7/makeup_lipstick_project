@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Table, Form, Button } from 'react-bootstrap';
+import { Table, Form, Button, Spinner } from 'react-bootstrap';
 import { ProductContext } from '../contexts/product-data.context';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../contexts/user-data.context';
+import '../App.css';
 
 const ColorDropdown = ({sourceIsSwatchSubmit}) => {
   const [searchText, setSearchText] = useState("");
@@ -11,6 +12,7 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
   const [matchedColors, setMatchedColors] = useState(collectionShades);
   const [selectedColor, setSelectedColor] = useState({});
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const {userData} = useContext(UserContext);
 
   const handleColorChange = (color) => {
@@ -25,6 +27,7 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     let formData = new FormData();
     formData.append("uid", userData.current.access_token);
@@ -42,9 +45,19 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
         },
       });
 
-      console.log('Swatch created:', response.data);
-    } catch (error) {
+      console.log(response);
+      if (response.status == 201) {
+        console.log('Swatch created:', response.data);
+        alert("Submitted successfully!");
+        window.location.href = window.location.origin;
+      }
+      
+    } 
+    catch (error) {
       console.error(error);
+    }
+    finally {
+      setLoading(false);
     }
   }
 
@@ -115,6 +128,13 @@ const ColorDropdown = ({sourceIsSwatchSubmit}) => {
 
   return (
     <div className="color-dropdown">
+      {loading && (
+        <div className="overlay">
+          <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        </div>
+      )}      
       <Form.Label className="dropdown-label">Click on a shade below to select it</Form.Label>
       <Form.Group controlId="colorSearch">
         <Form.Control
